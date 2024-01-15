@@ -19,13 +19,19 @@ export default async function handler(req, res) {
         });
 
         if (wine) {
+          // Set Content-Type header to ensure the response is interpreted as JSON
+          res.setHeader('Content-Type', 'application/json');
           res.status(200).json(wine);
         } else {
+          console.error('Unexpected response from the database:', wine);
           res.status(404).json({ error: 'Wine not found' });
         }
       } else {
         // If no ID is provided, fetch all wines
         const allWines = await prisma.wine.findMany();
+
+        // Set Content-Type header to ensure the response is interpreted as JSON
+        res.setHeader('Content-Type', 'application/json');
         res.status(200).json(allWines);
       }
     } else {
