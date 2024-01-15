@@ -87,7 +87,7 @@ const AddWine = () => {
         name='name'
         value={wineData.name}
         onChange={handleChange}
-        className='border p-2 rounded'
+        className='border p-2 text-black   rounded'
       />
     </div>
         
@@ -101,7 +101,7 @@ const AddWine = () => {
             name='year'
             value={wineData.year}
             onChange={handleChange}
-            className='border p-2 rounded'
+            className='border p-2 text-black rounded'
           />
         </div>
 
@@ -114,7 +114,7 @@ const AddWine = () => {
             name='type'
             value={wineData.type}
             onChange={handleChange}
-            className='border p-2 text-white rounded'
+            className='border p-2 text-black rounded'
           >
             <option value='RED'>Red</option>
             <option value='WHITE'>White</option>
@@ -133,7 +133,7 @@ const AddWine = () => {
             name='varietal'
             value={wineData.varietal}
             onChange={handleChange}
-            className='border p-2 text-white rounded'
+            className='border p-2 text-black rounded'
           >
           <option value='CABERNET_SAUVIGNON'>Cabernet Sauvignon</option>
           <option value='MERLOT'>Merlot</option>
@@ -157,7 +157,7 @@ const AddWine = () => {
             name='rating'
             value={wineData.rating}
             onChange={handleChange}
-            className='border p-2 rounded'
+            className='border p-2 text-black rounded'
           />
         </div>
 
@@ -174,21 +174,6 @@ const AddWine = () => {
           />
         </div>
 
-        {wineData.consumed && (
-          <div className='flex flex-col text-black'>
-            <label htmlFor='dateConsumed' className='mb-1 text-white'>
-              Date Consumed:
-            </label>
-            <input
-              type='date'
-              id='dateConsumed'
-              name='dateConsumed'
-              value={wineData.dateConsumed}
-              onChange={handleChange}
-              className='border p-2 text-white rounded'
-            />
-          </div>
-        )}
 
         <button
           type='submit'

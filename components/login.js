@@ -10,6 +10,7 @@ const LoginForm = () => {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const Router = useRouter();
+  
 
   const handleLogin = async () => {
     try {
@@ -29,7 +30,8 @@ const LoginForm = () => {
         Router.push('/gets');
         // Handle successful login, e.g., set user state, redirect, etc.
       } else {
-        console.error('Login failed:', response.statusText);
+        
+        console.error('Login failed: ', response.statusText);
         // Handle failed login, show error message, etc.
       }
     } catch (error) {

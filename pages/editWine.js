@@ -235,21 +235,8 @@ const EditWine = () => {
             onChange={handleChange}
           />
           
-          {wineData.consumed && (
-            <div className='flex flex-col text-black'>
-              <label htmlFor='dateConsumed' className='mb-1 text-white'>
-                Date Consumed:
-              </label>
-              <input
-                type='date'
-                id='dateConsumed'
-                name='dateConsumed'
-                value={wineData.dateConsumed}
-                onChange={handleChange}
-                className='border p-2 text-black rounded'
-              />
-            </div>
-          )}
+         
+    
             <motion.button
               type='submit'
               whileHover={{ scale: 1.05 }}
