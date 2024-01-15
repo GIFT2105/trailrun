@@ -4,7 +4,7 @@ import '../app/globals.css';
 import { useRouter } from 'next/navigation';
 
 
-const Router = useRouter();
+
 
 const AddWine = () => {
   const [wineData, setWineData] = useState({
@@ -26,6 +26,8 @@ const AddWine = () => {
       [name]: type === 'checkbox' ? e.target.checked : value,
     }));
   };
+
+  const Router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
