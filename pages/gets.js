@@ -1,12 +1,14 @@
 // pages/index.js
 import React, { useEffect, useState } from 'react';
-import '../app/globals.css';
+import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import '../app/globals.css';
 
 const Index = () => {
   const router = useRouter();
   const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -14,8 +16,10 @@ const Index = () => {
         const response = await fetch('/api/getting');
         const result = await response.json();
         setData(result);
+        setIsLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);
+        setIsLoading(false);
       }
     };
 
@@ -49,52 +53,65 @@ const Index = () => {
         <h1 className='text-2xl text-white font-bold mb-4'>List of Wines</h1>
       </div>
 
-      <div className='overflow-x-auto'>
-        <table className='min-w-full bg-white border border-gray-300'>
-          <thead>
-            <tr>
-              <th className='py-2 px-4 border-b'>ID</th>
-              <th className='py-2 px-4 border-b'>Name</th>
-              <th className='py-2 px-4 border-b'>Year</th>
-              <th className='py-2 px-4 border-b'>Type</th>
-              <th className='py-2 px-4 border-b'>Varietal</th>
-              <th className='py-2 px-4 border-b'>Rating</th>
-              <th className='py-2 px-4 border-b'>Consumed</th>
-              <th className='py-2 px-4 border-b'>Date Consumed</th>
-              <th className='py-2 px-4 border-b'>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((wine) => (
-              <tr key={wine.id} className='hover:bg-gray-100'>
-                <td className='py-2 px-4 border-b'>{wine.id}</td>
-                <td className='py-2 px-4 border-b'>{wine.name}</td>
-                <td className='py-2 px-4 border-b'>{wine.year}</td>
-                <td className='py-2 px-4 border-b'>{wine.type}</td>
-                <td className='py-2 px-4 border-b'>{wine.varietal}</td>
-                <td className='py-2 px-4 border-b'>{wine.rating}</td>
-                <td className='py-2 px-4 border-b'>{wine.consumed ? 'Yes' : 'No'}</td>
-                <td className='py-2 px-4 border-b'>{wine.dateConsumed}</td>
-                <td className='py-2 px-4 border-b'>
-                  <button
-                    onClick={() => router.push(`/editWine`)}
-                    className='bg-green-500 ml-4 text-white px-2 py-1 rounded'
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(wine.id)}
-                    className='bg-red-500 text-white px-2 py-1 rounded ml-2'
-                  >
-                    Delete
-                  </button>
-                </td>
+      {isLoading ? (
+        // Loading animation while fetching data
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className='text-white text-center'
+        >
+          Loading...
+        </motion.div>
+      ) : (
+        // Render data when not loading
+        <div className='overflow-x-auto'>
+          <table className='min-w-full bg-white border border-gray-300'>
+            <thead>
+              <tr>
+                <th className='py-2 px-4 border-b'>ID</th>
+                <th className='py-2 px-4 border-b'>Name</th>
+                <th className='py-2 px-4 border-b'>Year</th>
+                <th className='py-2 px-4 border-b'>Type</th>
+                <th className='py-2 px-4 border-b'>Varietal</th>
+                <th className='py-2 px-4 border-b'>Rating</th>
+                <th className='py-2 px-4 border-b'>Consumed</th>
+                <th className='py-2 px-4 border-b'>Date Consumed</th>
+                <th className='py-2 px-4 border-b'>Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      
+            </thead>
+            <tbody>
+              {data.map((wine) => (
+                <tr key={wine.id} className='hover:bg-gray-100'>
+                  <td className='py-2 px-4 border-b'>{wine.id}</td>
+                  <td className='py-2 px-4 border-b'>{wine.name}</td>
+                  <td className='py-2 px-4 border-b'>{wine.year}</td>
+                  <td className='py-2 px-4 border-b'>{wine.type}</td>
+                  <td className='py-2 px-4 border-b'>{wine.varietal}</td>
+                  <td className='py-2 px-4 border-b'>{wine.rating}</td>
+                  <td className='py-2 px-4 border-b'>{wine.consumed ? 'Yes' : 'No'}</td>
+                  <td className='py-2 px-4 border-b'>{wine.dateConsumed}</td>
+                  <td className='py-2 px-4 border-b'>
+                    <button
+                      onClick={() => router.push(`/editWine`)}
+                      className='bg-green-500 ml-4 text-white px-2 py-1 rounded'
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(wine.id)}
+                      className='bg-red-500 text-white px-2 py-1 rounded ml-2'
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
       <div className='mt-4'>
         <Link href='/addWine' className='bg-green-500 ml-4 w-full lg:w-96 text-white px-2 py-1 rounded block lg:inline-block'>
           Create

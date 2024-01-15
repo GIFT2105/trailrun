@@ -1,5 +1,5 @@
-// pages/editWine.js
 import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import '../app/globals.css';
 import { useRouter } from 'next/navigation';
 
@@ -17,6 +17,7 @@ const EditWine = () => {
   });
 
   const [winesList, setWinesList] = useState([]);
+  const [isFetching, setIsFetching] = useState(false);
   const Router = useRouter();
 
   useEffect(() => {
@@ -25,7 +26,7 @@ const EditWine = () => {
 
   const fetchWines = async () => {
     try {
-      const response = await fetch('/api/getting'); // Adjust the API endpoint
+      const response = await fetch('/api/getting');
       if (response.ok) {
         const wines = await response.json();
         setWinesList(wines);
@@ -64,6 +65,7 @@ const EditWine = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsFetching(true);
 
     try {
       const response = await fetch('/api/editing', {
@@ -81,19 +83,40 @@ const EditWine = () => {
       });
 
       if (response.ok) {
-        Router.push('/gets');
-        console.log('Wine edited successfully');
+        const editedWine = await response.json();
+
+        const changesMade =
+          editedWine.name !== wineData.name ||
+          editedWine.year.toString() !== wineData.year ||
+          editedWine.type !== wineData.type ||
+          editedWine.varietal !== wineData.varietal ||
+          editedWine.rating.toString() !== wineData.rating ||
+          editedWine.consumed !== wineData.consumed ||
+          editedWine.dateConsumed !== wineData.dateConsumed;
+
+        if (changesMade) {
+          setTimeout(() => {
+            setIsFetching(false);
+            Router.push('/gets');
+            console.log('Wine edited successfully');
+          }, 1000);
+        } else {
+          setIsFetching(false);
+          console.log('No changes made to the wine');
+        }
       } else {
+        setIsFetching(false);
         console.error('Error editing wine:', response.statusText);
       }
     } catch (error) {
+      setIsFetching(false);
       console.error('Error editing wine:', error);
     }
   };
 
   return (
-    <div className='text-white p-4'>
-      <h1 className='text-2xl font-bold mb-4'>Edit Wine</h1>
+    <div className='text-black p-4'>
+      <h1 className='text-2xl text-white font-abc font-bold mb-4'>Edit Wine</h1>
       <form onSubmit={handleSubmit} className='space-y-4'>
         <div className='flex flex-col text-black'>
           <label htmlFor='selectedWine' className='mb-1 text-white'>
@@ -104,7 +127,7 @@ const EditWine = () => {
             name='selectedWine'
             value={wineData.selectedWine}
             onChange={handleChange}
-            className='border p-2 text-white rounded'
+            className='border p-2 text-black rounded'
           >
             <option value=''>Select a Wine</option>
             {winesList.map((wine) => (
@@ -113,17 +136,20 @@ const EditWine = () => {
               </option>
             ))}
           </select>
-          <button
+          <motion.button
+            type='button'
             onClick={() => handleWineSelection(wineData.selectedWine)}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.9 }}
             className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700'
           >
             Select Wine
-          </button>
+          </motion.button>
         </div>
 
         {wineData.id && (
           <div>
-            <h2 className='text-xl font-bold mb-2'>Selected Wine</h2>
+            <h2 className='text-xl font-abc font-bold mb-2'>Selected Wine</h2>
             <label htmlFor='name' className='mb-1 text-white'>
             Name:
           </label>
@@ -156,7 +182,7 @@ const EditWine = () => {
             name='type'
             value={wineData.type}
             onChange={handleChange}
-            className='border p-2 text-white rounded'
+            className='border p-2 text-text-black rounded'
           >
             <option value='RED'>Red</option>
             <option value='WHITE'>White</option>
@@ -173,7 +199,7 @@ const EditWine = () => {
             name='varietal'
             value={wineData.varietal}
             onChange={handleChange}
-            className='border p-2 text-white rounded'
+            className='border p-2 text-text-black rounded'
           >
             <option value='CABERNET_SAUVIGNON'>Cabernet Sauvignon</option>
             <option value='MERLOT'>Merlot</option>
@@ -220,17 +246,20 @@ const EditWine = () => {
                 name='dateConsumed'
                 value={wineData.dateConsumed}
                 onChange={handleChange}
-                className='border p-2 text-white rounded'
+                className='border p-2 text-black rounded'
               />
             </div>
           )}
-          
-          <button
-            type='submit'
-            className='bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700'
-          >
-            Save Changes
-          </button>
+            <motion.button
+              type='submit'
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.9 }}
+              className={`bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700 ${
+                isFetching ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
+            >
+              {isFetching ? 'Saving Changes...' : 'Save Changes'}
+            </motion.button>
           </div>
         )}
       </form>
