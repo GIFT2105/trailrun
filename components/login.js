@@ -20,6 +20,8 @@ const LoginForm = () => {
         body: JSON.stringify({ email, password }),
       });
 
+      
+
       if (response.ok) {
         const userData = await response.json();
         console.log('Login successful!', userData);
