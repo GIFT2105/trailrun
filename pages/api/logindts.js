@@ -1,17 +1,9 @@
+// pages/api/getUserLoginDetails.js
 import { PrismaClient } from '@prisma/client';
-import Cors from 'cors';
 
 const prisma = new PrismaClient();
 
-// Initialize the CORS middleware
-const cors = Cors({
-  origin: 'https://trailrun.vercel.app/', // Replace with your frontend domain
-  methods: ['POST'],
-});
-
 export default async function handler(req, res) {
-  await cors(req, res);
-
   try {
     if (req.method !== 'POST') {
       res.status(405).json({ error: 'Method Not Allowed' });
