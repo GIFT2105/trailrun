@@ -18,7 +18,7 @@ export default async function handler(req, res) {
       varietal,
       rating,
       consumed,
-      dateConsumed,
+  
     } = req.body;
 
     // Validate required fields
@@ -37,7 +37,6 @@ export default async function handler(req, res) {
         varietal,
         rating: rating ? parseFloat(rating) : null,
         consumed: consumed || false,
-        dateConsumed: consumed ? new Date(dateConsumed) : null,
       },
     });
 

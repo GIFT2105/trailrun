@@ -1,22 +1,20 @@
-// pages/addWine.js
 import React, { useState } from 'react';
 import '../app/globals.css';
 import { useRouter } from 'next/navigation';
-
-
-
 
 const AddWine = () => {
   const [wineData, setWineData] = useState({
     id: '',
     name: '',
     year: '',
-    type: 'RED', // Default to RED, you can change as needed
-    varietal: 'CABERNET_SAUVIGNON', // Default to CABERNET_SAUVIGNON, you can change as needed
+    type: 'RED',
+    varietal: 'CABERNET_SAUVIGNON',
     rating: '',
     consumed: false,
     dateConsumed: '',
   });
+
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleChange = (e) => {
     const { name, value, type } = e.target;
@@ -40,57 +38,64 @@ const AddWine = () => {
         },
         body: JSON.stringify({
           ...wineData,
-          id: parseInt(wineData.id, 10), // Convert id to integer
-          year: parseInt(wineData.year, 10), // Convert year to integer
-          rating: wineData.rating ? parseFloat(wineData.rating) : null, // Convert rating to float or null
-          dateConsumed: wineData.consumed ? wineData.dateConsumed : null, // Include dateConsumed only if consumed is true
+          id: parseInt(wineData.id, 10),
+          year: parseInt(wineData.year, 10),
+          rating: wineData.rating ? parseFloat(wineData.rating) : null,
+          dateConsumed: wineData.consumed ? wineData.dateConsumed : null,
         }),
       });
 
       if (response.ok) {
-        Router.push('/gets'); // Redirect to home page
+        Router.push('/gets');
         console.log('Wine added successfully');
+      } else if (response.status === 409) {
+        const { error } = await response.json();
+        setErrorMessage(error || 'Oops! The wine with the same ID already exists in the database.');
       } else {
         console.error('Error adding wine:', response.statusText);
+        setErrorMessage('Oops! The wine with the same ID already exists in the database.');
       }
     } catch (error) {
       console.error('Error adding wine:', error);
+      setErrorMessage('Oops! The wine with the same ID already exists in the database.');
     }
   };
 
   return (
     <div className='text-white p-4'>
       <h1 className='text-2xl font-bold mb-4'>Add Wine</h1>
+
+      {errorMessage && <h1 className='text-red-500'>{errorMessage}</h1>}
+
       <form onSubmit={handleSubmit} className='space-y-4 '>
+        <div className='flex flex-col text-black'>
+          <label htmlFor='id' className='mb-1 text-white'>
+            ID:
+          </label>
+          <input
+            type='text'
+            id='id'
+            name='id'
+            value={wineData.id}
+            onChange={handleChange}
+            className='border p-2 rounded'
+          />
+        </div>
 
-      <div className='flex flex-col text-black'>
-      <label htmlFor='id' className='mb-1 text-white'>
-        ID:
-      </label>
-      <input
-        type='text'
-        id='id'
-        name='id'
-        value={wineData.id}
-        onChange={handleChange}
-        className='border p-2 rounded'
-      />
-    </div>
+        <div className='flex flex-col text-black'>
+          <label htmlFor='name' className='mb-1 text-white'>
+            Name:
+          </label>
+          <input
+            type='text'
+            id='name'
+            name='name'
+            value={wineData.name}
+            onChange={handleChange}
+            className='border p-2 text-black   rounded'
+          />
+        </div>
 
-    <div className='flex flex-col text-black'>
-      <label htmlFor='name' className='mb-1 text-white'>
-        Name:
-      </label>
-      <input
-        type='text'
-        id='name'
-        name='name'
-        value={wineData.name}
-        onChange={handleChange}
-        className='border p-2 text-black   rounded'
-      />
-    </div>
-        
         <div className='flex flex-col text-black'>
           <label htmlFor='year' className='mb-1 text-white'>
             Year:
@@ -135,15 +140,14 @@ const AddWine = () => {
             onChange={handleChange}
             className='border p-2 text-black rounded'
           >
-          <option value='CABERNET_SAUVIGNON'>Cabernet Sauvignon</option>
-          <option value='MERLOT'>Merlot</option>
-          <option value='SHIRAZ'>Shiraz</option>
-          <option value='CHENIN_BLANC'>Chenin Blanc</option>
-          <option value='SAUVIGNON_BLANC'>Sauvignon Blanc</option>
-          <option value='VERDELHO'>Verdelho</option>
-          <option value='CHARDONNAY'>Chardonnay</option>
-          <option value='DURIF'>Durif</option>
-          
+            <option value='CABERNET_SAUVIGNON'>Cabernet Sauvignon</option>
+            <option value='MERLOT'>Merlot</option>
+            <option value='SHIRAZ'>Shiraz</option>
+            <option value='CHENIN_BLANC'>Chenin Blanc</option>
+            <option value='SAUVIGNON_BLANC'>Sauvignon Blanc</option>
+            <option value='VERDELHO'>Verdelho</option>
+            <option value='CHARDONNAY'>Chardonnay</option>
+            <option value='DURIF'>Durif</option>
           </select>
         </div>
 
@@ -173,7 +177,6 @@ const AddWine = () => {
             onChange={handleChange}
           />
         </div>
-
 
         <button
           type='submit'
