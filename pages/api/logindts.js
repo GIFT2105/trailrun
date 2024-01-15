@@ -5,11 +5,11 @@ const prisma = new PrismaClient();
 
 export default async function handler(req, res) {
   try {
-    if (req.method !== 'POST') {
+    if (req.method !== 'POST' || req.url !== '/api/logindts') {
       res.status(405).json({ error: 'Method Not Allowed' });
       return;
     }
-
+    
     const { email, password } = req.body;
 
     if (!email || !password) {
